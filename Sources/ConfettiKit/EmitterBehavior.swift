@@ -25,7 +25,7 @@ enum EmitterBehavior {
             return nil
         }
         behavior.setValue("attractor", forKeyPath: "name")
-        behavior.setValue(-290, forKey: "falloff")
+        behavior.setValue(-50, forKey: "falloff")
         behavior.setValue(300, forKey: "radius")
         behavior.setValue(10, forKey: "stiffness")
         behavior.setValue(position, forKey: "position")

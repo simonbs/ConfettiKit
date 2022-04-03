@@ -1,11 +1,11 @@
 import UIKit
 
 public final class ConfettiView: UIView {
-    private let confetti: [Confetto]
+    private let images: [UIImage]
     private var shootings: [Shooting] = []
 
-    public init(confetti: [Confetto]) {
-        self.confetti = confetti
+    public init(images: [UIImage]) {
+        self.images = images
         super.init(frame: .zero)
         clipsToBounds = true
     }
@@ -22,7 +22,7 @@ public final class ConfettiView: UIView {
     }
 
     public func shoot() {
-        let view = ConfettiShotView(confetti: confetti)
+        let view = ConfettiShotView(images: images)
         view.frame = bounds
         addSubview(view)
         let shooting = Shooting(view: view)

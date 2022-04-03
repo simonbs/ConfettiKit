@@ -10,21 +10,26 @@ final class ConfettiLayerView: UIView {
             behaviors.append(behavior)
         }
         let this = CAEmitterLayer()
-        this.emitterShape = .sphere
+        this.emitterShape = .line
         this.birthRate = 0
+        this.lifetime = 0
         if !behaviors.isEmpty {
             this.setValue(behaviors, forKey: "emitterBehaviors")
         }
         return this
     }()
     private var haveSetupEmitterCells = false
-    private let confetti: [Confetto]
+    private let images: [UIImage]
+    private let birthRate: Float
     private let scale: CGFloat
+    private let scaleRange: CGFloat
     private let speed: Float
 
-    init(confetti: [Confetto], scale: CGFloat = 1, speed: Float = 1) {
-        self.confetti = confetti
+    init(images: [UIImage], birthRate: Float = 100, scale: CGFloat = 1, scaleRange: CGFloat = 0, speed: Float = 1) {
+        self.images = images
+        self.birthRate = birthRate
         self.scale = scale
+        self.scaleRange = scaleRange
         self.speed = speed
         super.init(frame: .zero)
         layer.addSublayer(emitterLayer)
@@ -36,8 +41,8 @@ final class ConfettiLayerView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        emitterLayer.emitterSize = CGSize(width: 100, height: 100)
-        emitterLayer.emitterPosition = CGPoint(x: bounds.midX, y: bounds.minY - 100)
+        emitterLayer.emitterSize = CGSize(width: bounds.width, height: 0)
+        emitterLayer.emitterPosition = CGPoint(x: bounds.midX, y: -10)
         emitterLayer.frame = bounds
         updateAttractorBehavior()
     }
@@ -51,7 +56,6 @@ final class ConfettiLayerView: UIView {
     }
 
     func addAnimations() {
-        emitterLayer.beginTime = CACurrentMediaTime()
         addAttractorAnimation()
         addBirthrateAnimation()
         addDragAnimation()
@@ -61,29 +65,31 @@ final class ConfettiLayerView: UIView {
 
 private extension ConfettiLayerView {
     private func setupEmitterCells() {
-        emitterLayer.emitterCells = confetti.map { confetto in
-            return emitterCell(showing: confetto.image)
-        }
+        emitterLayer.emitterCells = images.map(emitterCell)
+        emitterLayer.lifetime = 1
     }
 
     private func emitterCell(showing image: UIImage) -> CAEmitterCell {
         let cell = CAEmitterCell()
         cell.name = UUID().uuidString
-        cell.beginTime = 0
-        cell.birthRate = 150
-        cell.contents = image.cgImage
-        cell.emissionRange = .pi
-        cell.lifetime = 10
-        cell.spin = 4
-        cell.spinRange = 8
-        cell.velocityRange = 0
-        cell.yAcceleration = 0
+        cell.beginTime = CACurrentMediaTime()
+        cell.birthRate = birthRate
+        cell.lifetime = 5
+        cell.lifetimeRange = 0
+        cell.velocity = 180
+        cell.velocityRange = 40
+        cell.spin = 1.75
+        cell.spinRange = 2
         cell.scale = scale
+        cell.scaleRange = scaleRange
         cell.speed = speed
+        cell.emissionLongitude = degreesToRadians(180)
+        cell.emissionRange = degreesToRadians(90)
+        cell.contents = image.cgImage
         cell.setValue("plane", forKey: "particleType")
         cell.setValue(Double.pi, forKey: "orientationRange")
-        cell.setValue(Double.pi / 2, forKey: "orientationLongitude")
-        cell.setValue(Double.pi / 2, forKey: "orientationLatitude")
+        cell.setValue(Double.pi, forKey: "orientationLongitude")
+        cell.setValue(Double.pi, forKey: "orientationLatitude")
         return cell
     }
 
@@ -116,7 +122,7 @@ private extension ConfettiLayerView {
 
     private func addBirthrateAnimation() {
         let animation = CABasicAnimation()
-        animation.duration = 1
+        animation.duration = 2
         animation.fromValue = 1
         animation.toValue = 0
         emitterLayer.add(animation, forKey: "birthRate")
@@ -134,12 +140,18 @@ private extension ConfettiLayerView {
         let animation = CAKeyframeAnimation()
         animation.duration = 6
         animation.keyTimes = [0.05, 0.1, 0.5, 1]
-        animation.values = [0, 100, 2000, 4000]
+        animation.values = [0, 300, 750, 1000]
         let cells = emitterLayer.emitterCells ?? []
         for cell in cells {
             if let name = cell.name {
                 emitterLayer.add(animation, forKey: "emitterCells.\(name).yAcceleration")
             }
         }
+    }
+
+    private func degreesToRadians(_ degrees: Double) -> Double {
+        let degrees = Measurement(value: 180, unit: UnitAngle.degrees)
+        let radians = degrees.converted(to: .radians)
+        return radians.value
     }
 }
