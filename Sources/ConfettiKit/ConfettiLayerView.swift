@@ -1,6 +1,7 @@
 import UIKit
 
 final class ConfettiLayerView: UIView {
+    private let mode: ConfettiMode
     private let emitterLayer: CAEmitterLayer = {
         var behaviors: [NSObject] = []
         if let behavior = EmitterBehavior.makeHorizontalWaveBehavior() {
@@ -10,7 +11,6 @@ final class ConfettiLayerView: UIView {
             behaviors.append(behavior)
         }
         let this = CAEmitterLayer()
-        this.emitterShape = .line
         this.birthRate = 0
         this.lifetime = 0
         if !behaviors.isEmpty {
@@ -25,13 +25,15 @@ final class ConfettiLayerView: UIView {
     private let scaleRange: CGFloat
     private let speed: Float
 
-    init(images: [UIImage], birthRate: Float = 100, scale: CGFloat = 1, scaleRange: CGFloat = 0, speed: Float = 1) {
+    init(mode: ConfettiMode, images: [UIImage], birthRate: Float = 100, scale: CGFloat = 1, scaleRange: CGFloat = 0, speed: Float = 1) {
+        self.mode = mode
         self.images = images
         self.birthRate = birthRate
         self.scale = scale
         self.scaleRange = scaleRange
         self.speed = speed
         super.init(frame: .zero)
+        emitterLayer.emitterShape = mode.emitterShape
         layer.addSublayer(emitterLayer)
     }
 
@@ -42,7 +44,7 @@ final class ConfettiLayerView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         emitterLayer.emitterSize = CGSize(width: bounds.width, height: 0)
-        emitterLayer.emitterPosition = CGPoint(x: bounds.midX, y: -10)
+        emitterLayer.emitterPosition = mode.emitterPosition(in: bounds)
         emitterLayer.frame = bounds
         updateAttractorBehavior()
     }
@@ -139,12 +141,23 @@ private extension ConfettiLayerView {
     private func addGravityAnimation() {
         let animation = CAKeyframeAnimation()
         animation.duration = 6
-        animation.keyTimes = [0.05, 0.1, 0.5, 1]
-        animation.values = [0, 300, 750, 1000]
+        switch mode {
+        case .topToBottom:
+            animation.keyTimes = [0.05, 0.1, 0.5, 1]
+            animation.values = [0, 300, 750, 1000]
+        case .centerToLeft:
+            animation.keyTimes = [0, 0.1, 0.5, 1]
+            animation.values = [-1000, -750, -100, 0]
+        }
         let cells = emitterLayer.emitterCells ?? []
         for cell in cells {
             if let name = cell.name {
-                emitterLayer.add(animation, forKey: "emitterCells.\(name).yAcceleration")
+                switch mode {
+                case .topToBottom:
+                    emitterLayer.add(animation, forKey: "emitterCells.\(name).yAcceleration")
+                case .centerToLeft:
+                    emitterLayer.add(animation, forKey: "emitterCells.\(name).xAcceleration")
+                }
             }
         }
     }
@@ -153,5 +166,25 @@ private extension ConfettiLayerView {
         let degrees = Measurement(value: 180, unit: UnitAngle.degrees)
         let radians = degrees.converted(to: .radians)
         return radians.value
+    }
+}
+
+private extension ConfettiMode {
+    var emitterShape: CAEmitterLayerEmitterShape {
+        switch self {
+        case .topToBottom:
+            return .line
+        case .centerToLeft:
+            return .point
+        }
+    }
+
+    func emitterPosition(in rect: CGRect) -> CGPoint {
+        switch self {
+        case .topToBottom:
+            return CGPoint(x: rect.midX, y: -10)
+        case .centerToLeft:
+            return CGPoint(x: rect.midX, y: rect.midY)
+        }
     }
 }
