@@ -49,7 +49,7 @@ private extension EmitterBehavior {
         guard let klass = NSClassFromString(klassName) as? NSObject.Type else {
             return nil
         }
-        let methodName = "Wroivaheb".reversed() + "ithTy" + ":ep".reversed()
+        let methodName: String = "Wroivaheb".reversed() + "ithTy" + ":ep".reversed()
         guard let behaviorWithType = klass.method(for: NSSelectorFromString(methodName)) else {
             return nil
         }
