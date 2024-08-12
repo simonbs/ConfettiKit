@@ -1,4 +1,4 @@
-# ConfettiKit
+# 🎊 ConfettiKit
 
 A Swift package for shooting confetti. The implementation is heavily inspired by the blog post [Recreating iMessage Confetti](https://bryce.co/recreating-imessage-confetti/) by [@brycepauken](https://twitter.com/brycepauken).
 
@@ -60,3 +60,13 @@ let confettiView = ConfettiView(mode: .centerToLeft, images: images)
 This can be used to create the effect shown below.
 
 ![](confettiview-centertoleft.gif)
+
+## 👨‍💻 Contributing
+
+ConfettiKit was specifically built to be used in my side projects, including [Runestone Text Editor](https://apps.apple.com/us/app/runestone-editor/id1548193893) and [Re: Toot](https://apps.apple.com/us/app/re-toot/id1661697436), so its API might be limited. However, pull requests with bug fixes and new features are much appreciated. I'll be happy to review and merge them once they're ready, as long as they align with the vision of ConfettiKit and offer generally useful functionality.
+
+Clone the repository to get started working on the project.
+
+```bash
+git clone git@github.com:simonbs/ConfettiKit.git
+```
