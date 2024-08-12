@@ -1,14 +1,7 @@
-//
-//  ViewController.swift
-//  Confetti
-//
-//  Created by Simon Støvring on 02/04/2022.
-//
-
 import ConfettiKit
 import UIKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     private let emojiLabel: UILabel = {
         let this = UILabel()
         this.font = .systemFont(ofSize: 64)
