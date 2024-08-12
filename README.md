@@ -48,7 +48,7 @@ confettiView.shoot()
 
 By default, ConfettiView shoots confetti from the top to the bottom, creating the effect shown below.
 
-![](confettiview-toptobottom.gif)
+<img width="200" src="confettiview-toptobottom.gif" />
 
 You may configure it to shoot confetti from the center to the left of the screen.
 
@@ -59,7 +59,7 @@ let confettiView = ConfettiView(mode: .centerToLeft, images: images)
 
 This can be used to create the effect shown below.
 
-![](confettiview-centertoleft.gif)
+<img width="200" src="confettiview-centertoleft.gif" />
 
 ## 👨‍💻 Contributing
 
