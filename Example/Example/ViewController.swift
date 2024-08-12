@@ -60,7 +60,7 @@ private extension ViewController {
     @objc private func segmentedControlValueChanged() {
         if segmentedControl.selectedSegmentIndex == 0 {
             setupConfettiView(with: .topToBottom)
-        } else if segmentedControl.selectedSegmentIndex == 1{
+        } else if segmentedControl.selectedSegmentIndex == 1 {
             setupConfettiView(with: .centerToLeft)
         }
     }

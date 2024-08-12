@@ -8,7 +8,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        let windowScene = scene as! UIWindowScene
+        guard let windowScene = scene as? UIWindowScene else {
+            fatalError("Expected scene of type \(UIWindowScene.self)")
+        }
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = ViewController()
         window?.makeKeyAndVisible()

@@ -7,7 +7,7 @@ let package = Package(
     name: "ConfettiKit",
     platforms: [.iOS(.v15), .macCatalyst(.v15)],
     products: [
-        .library(name: "ConfettiKit", targets: ["ConfettiKit"]),
+        .library(name: "ConfettiKit", targets: ["ConfettiKit"])
     ],
     targets: [
         .target(name: "ConfettiKit", dependencies: [])

@@ -135,7 +135,7 @@ private extension ConfettiLayerView {
         animation.duration = 0.35
         animation.fromValue = 0
         animation.toValue = 2
-        emitterLayer.add(animation, forKey:  "emitterBehaviors.drag.drag")
+        emitterLayer.add(animation, forKey: "emitterBehaviors.drag.drag")
     }
 
     private func addGravityAnimation() {
@@ -144,10 +144,10 @@ private extension ConfettiLayerView {
         switch mode {
         case .topToBottom:
             animation.keyTimes = [0.05, 0.1, 0.5, 1]
-            animation.values = [0, 300, 750, 1000]
+            animation.values = [0, 300, 750, 1_000]
         case .centerToLeft:
             animation.keyTimes = [0, 0.1, 0.5, 1]
-            animation.values = [-1000, -750, -100, 0]
+            animation.values = [-1_000, -750, -100, 0]
         }
         let cells = emitterLayer.emitterCells ?? []
         for cell in cells {

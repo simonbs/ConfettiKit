@@ -19,7 +19,7 @@ public final class ConfettiView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func layoutSubviews() {
+    override public func layoutSubviews() {
         super.layoutSubviews()
         for shooting in shootings {
             shooting.view?.frame = bounds
