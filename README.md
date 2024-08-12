@@ -1,6 +1,6 @@
 # 🎊 ConfettiKit
 
-A Swift package for shooting confetti. The implementation is heavily inspired by the blog post [Recreating iMessage Confetti](https://bryce.co/recreating-imessage-confetti/) by [Bryce Bostwick]([https://twitter.com/brycepauken](https://mastodon.bryce.co/@bryce)).
+A Swift package for shooting confetti. The implementation is heavily inspired by the blog post [Recreating iMessage Confetti](https://bryce.co/recreating-imessage-confetti/) by [Bryce Bostwick](https://mastodon.bryce.co/@bryce).
 
 ## 📦 Adding the Package
 
