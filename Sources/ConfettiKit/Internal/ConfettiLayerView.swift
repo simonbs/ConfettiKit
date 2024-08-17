@@ -148,6 +148,9 @@ private extension ConfettiLayerView {
         case .centerToLeft:
             animation.keyTimes = [0, 0.1, 0.5, 1]
             animation.values = [-1_000, -750, -100, 0]
+        case .centerToEdges:
+            animation.keyTimes = [0, 0.1, 0.5, 1]
+            animation.values = [0, 0, 0, 0]
         }
         let cells = emitterLayer.emitterCells ?? []
         for cell in cells {
@@ -156,6 +159,8 @@ private extension ConfettiLayerView {
                 case .topToBottom:
                     emitterLayer.add(animation, forKey: "emitterCells.\(name).yAcceleration")
                 case .centerToLeft:
+                    emitterLayer.add(animation, forKey: "emitterCells.\(name).xAcceleration")
+                case .centerToEdges:
                     emitterLayer.add(animation, forKey: "emitterCells.\(name).xAcceleration")
                 }
             }
@@ -176,6 +181,8 @@ private extension ConfettiMode {
             return .line
         case .centerToLeft:
             return .point
+        case .centerToEdges:
+            return .point
         }
     }
 
@@ -184,6 +191,8 @@ private extension ConfettiMode {
         case .topToBottom:
             return CGPoint(x: rect.midX, y: -10)
         case .centerToLeft:
+            return CGPoint(x: rect.midX, y: rect.midY)
+        case .centerToEdges:
             return CGPoint(x: rect.midX, y: rect.midY)
         }
     }
