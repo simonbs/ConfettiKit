@@ -14,6 +14,7 @@ final class ViewController: UIViewController {
         this.translatesAutoresizingMaskIntoConstraints = false
         this.insertSegment(withTitle: "Top to Bottom", at: 0, animated: false)
         this.insertSegment(withTitle: "Center to Left", at: 1, animated: false)
+        this.insertSegment(withTitle: "Center to Edges", at: 2, animated: false)
         this.selectedSegmentIndex = 0
         return this
     }()
@@ -62,6 +63,8 @@ private extension ViewController {
             setupConfettiView(with: .topToBottom)
         } else if segmentedControl.selectedSegmentIndex == 1 {
             setupConfettiView(with: .centerToLeft)
+        } else if segmentedControl.selectedSegmentIndex == 2 {
+            setupConfettiView(with: .centerToEdges)
         }
     }
 }
