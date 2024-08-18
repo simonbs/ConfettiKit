@@ -85,6 +85,7 @@ private extension ConfettiLayerView {
         cell.scale = scale
         cell.scaleRange = scaleRange
         cell.speed = speed
+        cell.alphaSpeed = -0.4
         cell.emissionLongitude = degreesToRadians(180)
         cell.emissionRange = degreesToRadians(90)
         cell.contents = image.cgImage
