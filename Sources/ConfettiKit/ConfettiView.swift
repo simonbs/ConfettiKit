@@ -39,7 +39,13 @@ public final class ConfettiView: UIView {
 
 extension ConfettiView: ShootingDelegate {
     func shootingDidFinish(_ shooting: Shooting) {
-        shooting.view?.removeFromSuperview()
-        shootings.removeAll { $0 === shooting }
+        guard let view = shooting.view else { return }
+        
+        UIView.animate(withDuration: 0.5, animations: {
+            view.alpha = 0.0
+        }, completion: { _ in
+            view.removeFromSuperview()
+            self.shootings.removeAll { $0 === shooting }
+        })
     }
 }
