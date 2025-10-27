@@ -84,6 +84,7 @@ private extension ConfettiLayerView {
         cell.spinRange = 2
         cell.scale = scale
         cell.scaleRange = scaleRange
+        cell.alphaSpeed = -0.2
         cell.speed = speed
         cell.emissionLongitude = degreesToRadians(180)
         cell.emissionRange = degreesToRadians(90)
