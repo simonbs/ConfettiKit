@@ -13,6 +13,7 @@
 		7250C65F27F8519600DC42CB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7250C65E27F8519600DC42CB /* Assets.xcassets */; };
 		7250C66227F8519600DC42CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7250C66027F8519600DC42CB /* LaunchScreen.storyboard */; };
 		7250C66C27F851D300DC42CB /* ConfettiKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7250C66B27F851D300DC42CB /* ConfettiKit */; };
+		72B7131A2EAF65610060ACDB /* ConfettiModeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72B713192EAF65600060ACDB /* ConfettiModeButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		7250C66127F8519600DC42CB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7250C66327F8519600DC42CB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7250C66927F851C600DC42CB /* ConfettiKit */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ConfettiKit; path = ..; sourceTree = "<group>"; };
+		72B713192EAF65600060ACDB /* ConfettiModeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfettiModeButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 		7250C65427F8519400DC42CB /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				72B713192EAF65600060ACDB /* ConfettiModeButton.swift */,
 				7250C65527F8519400DC42CB /* AppDelegate.swift */,
 				7250C65727F8519400DC42CB /* SceneDelegate.swift */,
 				7250C65927F8519400DC42CB /* ViewController.swift */,
@@ -149,6 +152,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				72B7131A2EAF65610060ACDB /* ConfettiModeButton.swift in Sources */,
 				7250C65A27F8519400DC42CB /* ViewController.swift in Sources */,
 				7250C65627F8519400DC42CB /* AppDelegate.swift in Sources */,
 				7250C65827F8519400DC42CB /* SceneDelegate.swift in Sources */,

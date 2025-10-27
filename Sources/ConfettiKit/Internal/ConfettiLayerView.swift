@@ -145,9 +145,12 @@ private extension ConfettiLayerView {
         case .topToBottom:
             animation.keyTimes = [0.05, 0.1, 0.5, 1]
             animation.values = [0, 300, 750, 1_000]
-        case .centerToLeft:
+        case .centerToLeft, .centerToTop:
             animation.keyTimes = [0, 0.1, 0.5, 1]
             animation.values = [-1_000, -750, -100, 0]
+        case .centerToRight, .centerToBottom:
+            animation.keyTimes = [0, 0.1, 0.5, 1]
+            animation.values = [1_000, 750, 100, 0]
         case .centerToEdges:
             animation.keyTimes = [0, 0.1, 0.5, 1]
             animation.values = [0, 0, 0, 0]
@@ -156,11 +159,9 @@ private extension ConfettiLayerView {
         for cell in cells {
             if let name = cell.name {
                 switch mode {
-                case .topToBottom:
+                case .topToBottom, .centerToTop, .centerToBottom:
                     emitterLayer.add(animation, forKey: "emitterCells.\(name).yAcceleration")
-                case .centerToLeft:
-                    emitterLayer.add(animation, forKey: "emitterCells.\(name).xAcceleration")
-                case .centerToEdges:
+                case .centerToLeft, .centerToRight, .centerToEdges:
                     emitterLayer.add(animation, forKey: "emitterCells.\(name).xAcceleration")
                 }
             }
@@ -178,22 +179,18 @@ private extension ConfettiMode {
     var emitterShape: CAEmitterLayerEmitterShape {
         switch self {
         case .topToBottom:
-            return .line
-        case .centerToLeft:
-            return .point
-        case .centerToEdges:
-            return .point
+            .line
+        case .centerToLeft, .centerToTop, .centerToRight, .centerToBottom, .centerToEdges:
+            .point
         }
     }
 
     func emitterPosition(in rect: CGRect) -> CGPoint {
         switch self {
         case .topToBottom:
-            return CGPoint(x: rect.midX, y: -10)
-        case .centerToLeft:
-            return CGPoint(x: rect.midX, y: rect.midY)
-        case .centerToEdges:
-            return CGPoint(x: rect.midX, y: rect.midY)
+            CGPoint(x: rect.midX, y: -10)
+        case .centerToLeft, .centerToTop, .centerToRight, .centerToBottom, .centerToEdges:
+            CGPoint(x: rect.midX, y: rect.midY)
         }
     }
 }

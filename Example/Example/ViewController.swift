@@ -9,13 +9,9 @@ final class ViewController: UIViewController {
         return this
     }()
     private var confettiView: ConfettiView?
-    private let segmentedControl: UISegmentedControl = {
-        let this = UISegmentedControl()
+    private let modeButton: ConfettiModeButton = {
+        let this = ConfettiModeButton()
         this.translatesAutoresizingMaskIntoConstraints = false
-        this.insertSegment(withTitle: "Top to Bottom", at: 0, animated: false)
-        this.insertSegment(withTitle: "Center to Left", at: 1, animated: false)
-        this.insertSegment(withTitle: "Center to Edges", at: 2, animated: false)
-        this.selectedSegmentIndex = 0
         return this
     }()
 
@@ -23,9 +19,11 @@ final class ViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         view.addSubview(emojiLabel)
-        view.addSubview(segmentedControl)
-        segmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
-        setupConfettiView(with: .topToBottom)
+        view.addSubview(modeButton)
+        setupConfettiView(with: modeButton.selectedMode)
+        modeButton.onSelectionChange = { [weak self] mode in
+            self?.setupConfettiView(with: mode)
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -34,11 +32,11 @@ final class ViewController: UIViewController {
         let emojiLabelOrigin = CGPoint(x: (view.frame.width - emojiLabelSize.width) / 2, y: (view.frame.height - emojiLabelSize.height) / 2)
         emojiLabel.frame = CGRect(origin: emojiLabelOrigin, size: emojiLabelSize)
         confettiView?.frame = view.bounds
-        let segmentedControlSize = segmentedControl.intrinsicContentSize
+        let segmentedControlSize = modeButton.intrinsicContentSize
         let segmentedControlOriginX = (view.frame.width - segmentedControlSize.width) / 2
         let segmentedControlOriginY = view.frame.height - view.safeAreaInsets.bottom - segmentedControlSize.height - 30
         let segmentedControlOrigin = CGPoint(x: segmentedControlOriginX, y: segmentedControlOriginY)
-        segmentedControl.frame = CGRect(origin: segmentedControlOrigin, size: segmentedControlSize)
+        modeButton.frame = CGRect(origin: segmentedControlOrigin, size: segmentedControlSize)
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -56,15 +54,5 @@ private extension ViewController {
         view.addSubview(confettiView)
         self.confettiView = confettiView
         view.setNeedsLayout()
-    }
-
-    @objc private func segmentedControlValueChanged() {
-        if segmentedControl.selectedSegmentIndex == 0 {
-            setupConfettiView(with: .topToBottom)
-        } else if segmentedControl.selectedSegmentIndex == 1 {
-            setupConfettiView(with: .centerToLeft)
-        } else if segmentedControl.selectedSegmentIndex == 2 {
-            setupConfettiView(with: .centerToEdges)
-        }
     }
 }
