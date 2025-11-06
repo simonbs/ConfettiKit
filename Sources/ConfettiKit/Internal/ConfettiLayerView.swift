@@ -25,7 +25,14 @@ final class ConfettiLayerView: UIView {
     private let scaleRange: CGFloat
     private let speed: Float
 
-    init(mode: ConfettiMode, images: [UIImage], birthRate: Float = 100, scale: CGFloat = 1, scaleRange: CGFloat = 0, speed: Float = 1) {
+    init(
+        mode: ConfettiMode,
+        images: [UIImage],
+        birthRate: Float = 100,
+        scale: CGFloat = 1,
+        scaleRange: CGFloat = 0,
+        speed: Float = 1
+    ) {
         self.mode = mode
         self.images = images
         self.birthRate = birthRate
