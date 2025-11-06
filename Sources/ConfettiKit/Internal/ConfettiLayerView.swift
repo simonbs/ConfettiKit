@@ -24,6 +24,26 @@ final class ConfettiLayerView: UIView {
     private let scale: CGFloat
     private let scaleRange: CGFloat
     private let speed: Float
+    private var defaultEmissionLongitude: Double {
+        switch mode {
+        case .centerToBottom:
+            90
+        case .centerToRight, .centerToEdges:
+            0
+        case .centerToTop:
+            270
+        case .topToBottom, .centerToLeft:
+            180
+        }
+    }
+    private var defaultEmissionRange: Double {
+        switch mode {
+        case .topToBottom, .centerToLeft, .centerToTop, .centerToRight, .centerToBottom:
+            90
+        case .centerToEdges:
+            360
+        }
+    }
 
     init(
         mode: ConfettiMode,
@@ -93,8 +113,8 @@ private extension ConfettiLayerView {
         cell.scaleRange = scaleRange
         cell.alphaSpeed = -0.2
         cell.speed = speed
-        cell.emissionLongitude = degreesToRadians(180)
-        cell.emissionRange = degreesToRadians(90)
+        cell.emissionLongitude = degreesToRadians(defaultEmissionLongitude)
+        cell.emissionRange = degreesToRadians(defaultEmissionRange)
         cell.contents = image.cgImage
         cell.setValue("plane", forKey: "particleType")
         cell.setValue(Double.pi, forKey: "orientationRange")
@@ -177,7 +197,7 @@ private extension ConfettiLayerView {
     }
 
     private func degreesToRadians(_ degrees: Double) -> Double {
-        let degrees = Measurement(value: 180, unit: UnitAngle.degrees)
+        let degrees = Measurement(value: degrees, unit: UnitAngle.degrees)
         let radians = degrees.converted(to: .radians)
         return radians.value
     }
