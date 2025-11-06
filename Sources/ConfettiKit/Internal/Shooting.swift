@@ -20,7 +20,13 @@ final class Shooting {
 
     func scheduleFinish() {
         if timer == nil {
-            timer = .scheduledTimer(timeInterval: 5, target: self, selector: #selector(timerDidTrigger), userInfo: nil, repeats: false)
+            timer = .scheduledTimer(
+                timeInterval: 5,
+                target: self,
+                selector: #selector(timerDidTrigger),
+                userInfo: nil,
+                repeats: false
+            )
         }
     }
 }
