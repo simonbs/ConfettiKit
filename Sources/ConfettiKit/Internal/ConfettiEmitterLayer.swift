@@ -1,29 +1,13 @@
-import UIKit
+import Foundation
+import QuartzCore
 
-final class ConfettiLayerView: UIView {
+final class ConfettiEmitterLayer: CAEmitterLayer {
     private let mode: ConfettiMode
-    private let emitterLayer: CAEmitterLayer = {
-        var behaviors: [NSObject] = []
-        if let behavior = EmitterBehavior.makeHorizontalWaveBehavior() {
-            behaviors.append(behavior)
-        }
-        if let behavior = EmitterBehavior.makeVerticalWaveBehavior() {
-            behaviors.append(behavior)
-        }
-        let this = CAEmitterLayer()
-        this.birthRate = 0
-        this.lifetime = 0
-        if !behaviors.isEmpty {
-            this.setValue(behaviors, forKey: "emitterBehaviors")
-        }
-        return this
-    }()
-    private var haveSetupEmitterCells = false
-    private let images: [UIImage]
-    private let birthRate: Float
-    private let scale: CGFloat
+    private let images: [CGImage]
+    private let particleBirthRate: Float
+    private let particleScale: CGFloat
     private let scaleRange: CGFloat
-    private let speed: Float
+    private let particleSpeed: Float
     private var defaultEmissionLongitude: Double {
         switch mode {
         case .centerToBottom:
@@ -47,7 +31,7 @@ final class ConfettiLayerView: UIView {
 
     init(
         mode: ConfettiMode,
-        images: [UIImage],
+        images: [CGImage],
         birthRate: Float = 100,
         scale: CGFloat = 1,
         scaleRange: CGFloat = 0,
@@ -55,33 +39,43 @@ final class ConfettiLayerView: UIView {
     ) {
         self.mode = mode
         self.images = images
-        self.birthRate = birthRate
-        self.scale = scale
+        self.particleBirthRate = birthRate
+        self.particleScale = scale
         self.scaleRange = scaleRange
-        self.speed = speed
-        super.init(frame: .zero)
-        emitterLayer.emitterShape = mode.emitterShape
-        layer.addSublayer(emitterLayer)
+        self.particleSpeed = speed
+        super.init()
+        emitterShape = mode.emitterShape
+        self.birthRate = 0
+        lifetime = 0
+        var behaviors: [NSObject] = []
+        if let behavior = EmitterBehavior.makeHorizontalWaveBehavior() { behaviors.append(behavior) }
+        if let behavior = EmitterBehavior.makeVerticalWaveBehavior() { behaviors.append(behavior) }
+        if !behaviors.isEmpty { setValue(behaviors, forKey: "emitterBehaviors") }
+        setupEmitterCells()
+    }
+
+    override init(layer: Any) {
+        guard let source = layer as? ConfettiEmitterLayer else {
+            fatalError("Expected a ConfettiEmitterLayer")
+        }
+        mode = source.mode
+        images = source.images
+        particleBirthRate = source.particleBirthRate
+        particleScale = source.particleScale
+        scaleRange = source.scaleRange
+        particleSpeed = source.particleSpeed
+        super.init(layer: layer)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        emitterLayer.emitterSize = CGSize(width: bounds.width, height: 0)
-        emitterLayer.emitterPosition = mode.emitterPosition(in: bounds)
-        emitterLayer.frame = bounds
+    func updateGeometry(in bounds: CGRect) {
+        frame = bounds
+        emitterSize = CGSize(width: bounds.width, height: 0)
+        emitterPosition = mode.emitterPosition(in: bounds)
         updateAttractorBehavior()
-    }
-
-    override func willMove(toSuperview newSuperview: UIView?) {
-        super.willMove(toSuperview: newSuperview)
-        if newSuperview != nil && !haveSetupEmitterCells {
-            haveSetupEmitterCells = true
-            setupEmitterCells()
-        }
     }
 
     func addAnimations() {
@@ -92,30 +86,30 @@ final class ConfettiLayerView: UIView {
     }
 }
 
-private extension ConfettiLayerView {
+private extension ConfettiEmitterLayer {
     private func setupEmitterCells() {
-        emitterLayer.emitterCells = images.map(emitterCell)
-        emitterLayer.lifetime = 1
+        emitterCells = images.map(emitterCell)
+        lifetime = 1
     }
 
-    private func emitterCell(showing image: UIImage) -> CAEmitterCell {
+    private func emitterCell(showing image: CGImage) -> CAEmitterCell {
         let cell = CAEmitterCell()
         cell.name = UUID().uuidString
         cell.beginTime = CACurrentMediaTime()
-        cell.birthRate = birthRate
+        cell.birthRate = particleBirthRate
         cell.lifetime = 5
         cell.lifetimeRange = 0
         cell.velocity = 180
         cell.velocityRange = 40
         cell.spin = 1.75
         cell.spinRange = 2
-        cell.scale = scale
+        cell.scale = particleScale
         cell.scaleRange = scaleRange
         cell.alphaSpeed = -0.2
-        cell.speed = speed
+        cell.speed = particleSpeed
         cell.emissionLongitude = degreesToRadians(defaultEmissionLongitude)
         cell.emissionRange = degreesToRadians(defaultEmissionRange)
-        cell.contents = image.cgImage
+        cell.contents = image
         cell.setValue("plane", forKey: "particleType")
         cell.setValue(Double.pi, forKey: "orientationRange")
         cell.setValue(Double.pi, forKey: "orientationLongitude")
@@ -124,7 +118,7 @@ private extension ConfettiLayerView {
     }
 
     private func updateAttractorBehavior() {
-        guard let behaviors = emitterLayer.value(forKey: "emitterBehaviors") as? [NSObject], !behaviors.isEmpty else {
+        guard let behaviors = value(forKey: "emitterBehaviors") as? [NSObject], !behaviors.isEmpty else {
             return
         }
         var newBehaviors = behaviors
@@ -135,10 +129,10 @@ private extension ConfettiLayerView {
                 return false
             }
         }
-        if let attractorBehavior = EmitterBehavior.attractorBehavior(position: emitterLayer.emitterPosition) {
+        if let attractorBehavior = EmitterBehavior.attractorBehavior(position: emitterPosition) {
             newBehaviors.append(attractorBehavior)
         }
-        emitterLayer.setValue(newBehaviors, forKey: "emitterBehaviors")
+        setValue(newBehaviors, forKey: "emitterBehaviors")
     }
 
     private func addAttractorAnimation() {
@@ -147,7 +141,7 @@ private extension ConfettiLayerView {
         animation.duration = 3
         animation.keyTimes = [0, 0.4]
         animation.values = [80, 5]
-        emitterLayer.add(animation, forKey: "emitterBehaviors.attractor.stiffness")
+        add(animation, forKey: "emitterBehaviors.attractor.stiffness")
     }
 
     private func addBirthrateAnimation() {
@@ -155,7 +149,7 @@ private extension ConfettiLayerView {
         animation.duration = 2
         animation.fromValue = 1
         animation.toValue = 0
-        emitterLayer.add(animation, forKey: "birthRate")
+        add(animation, forKey: "birthRate")
     }
 
     private func addDragAnimation() {
@@ -163,7 +157,7 @@ private extension ConfettiLayerView {
         animation.duration = 0.35
         animation.fromValue = 0
         animation.toValue = 2
-        emitterLayer.add(animation, forKey: "emitterBehaviors.drag.drag")
+        add(animation, forKey: "emitterBehaviors.drag.drag")
     }
 
     private func addGravityAnimation() {
@@ -183,14 +177,14 @@ private extension ConfettiLayerView {
             animation.keyTimes = [0, 0.1, 0.5, 1]
             animation.values = [0, 0, 0, 0]
         }
-        let cells = emitterLayer.emitterCells ?? []
+        let cells = emitterCells ?? []
         for cell in cells {
             if let name = cell.name {
                 switch mode {
                 case .topToBottom, .centerToTop, .centerToBottom:
-                    emitterLayer.add(animation, forKey: "emitterCells.\(name).yAcceleration")
+                    add(animation, forKey: "emitterCells.\(name).yAcceleration")
                 case .centerToLeft, .centerToRight, .centerToEdges:
-                    emitterLayer.add(animation, forKey: "emitterCells.\(name).xAcceleration")
+                    add(animation, forKey: "emitterCells.\(name).xAcceleration")
                 }
             }
         }

@@ -16,7 +16,7 @@ let package = Package(
 
 ## 🚀 Getting Started
 
-Start by creating an instance of ConfettiView and pass an array of UIImage's when doing so. Make sure to add the view to your view hierarchy.
+ConfettiKit supports iOS 15+, Mac Catalyst 15+, and native macOS 12+. Create a `ConfettiView` with an array of `UIImage` values on UIKit or `NSImage` values on AppKit. Make sure to add the view to your view hierarchy.
 
 ```swift
 final class ViewController: UIViewController {
@@ -60,6 +60,30 @@ let confettiView = ConfettiView(mode: .centerToLeft, images: images)
 This can be used to create the effect shown below.
 
 <img width="200" src="confettiview-centertoleft.gif" />
+
+## Native macOS
+
+On AppKit, `ConfettiView` is an `NSView` with the same initializer, `shoot()` method,
+`ConfettiMode` cases, and `birthRate1`/`birthRate2` controls as the UIKit view:
+
+```swift
+import AppKit
+import ConfettiKit
+
+let images: [NSImage] = [...] // Supply the same artwork as your iOS app.
+let confettiView = ConfettiView(images: images)
+confettiView.frame = contentView.bounds
+confettiView.autoresizingMask = [.width, .height]
+contentView.addSubview(confettiView)
+confettiView.shoot()
+```
+
+The AppKit view uses flipped coordinates so the shared emitter positions, directions,
+gravity, foreground/background layers, and animation curves behave like UIKit.
+Both platforms use the same Core Animation engine; only view lifecycle and image
+conversion differ. Each burst is removed after five seconds, and active bursts
+follow view resizing. When embedding confetti as an overlay, the host should arrange
+mouse/touch passthrough and respect its platform's Reduce Motion preference.
 
 ## 👨‍💻 Contributing
 

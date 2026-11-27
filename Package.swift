@@ -5,11 +5,12 @@ import PackageDescription
 
 let package = Package(
     name: "ConfettiKit",
-    platforms: [.iOS(.v15), .macCatalyst(.v15)],
+    platforms: [.iOS(.v15), .macCatalyst(.v15), .macOS(.v12)],
     products: [
         .library(name: "ConfettiKit", targets: ["ConfettiKit"])
     ],
     targets: [
-        .target(name: "ConfettiKit", dependencies: [])
+        .target(name: "ConfettiKit", dependencies: []),
+        .testTarget(name: "ConfettiKitTests", dependencies: ["ConfettiKit"])
     ]
 )
